@@ -6,6 +6,7 @@ import { CreateTeamDto } from './dto/create-team.dto';
 import { GetTeamUsersDto } from './dto/get-team-users.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
+import { toTeamUsersDto } from './mapper/team.mapper';
 
 @Injectable()
 export class TeamService {
@@ -26,13 +27,7 @@ export class TeamService {
         where: { code: teamCode }
       })
 
-    return teams.map(({ name, code, users }) => (
-      {
-        name,
-        code,
-        users: users.map(({ username, employee }) => ({ username, email: employee.email } as GetUserDto))
-      } as GetTeamUsersDto)
-    )
+    return teams.map(team => toTeamUsersDto(team));
   }
 
   findOne(id: number) {

@@ -7,6 +7,7 @@ import {Repository} from "typeorm";
 import { Employee } from 'src/employee/entities/employee.entity';
 import { Team } from 'src/team/entities/team.entity';
 import { GetUserTeamDto } from './dto/get-user-team.dto';
+import { toUser, toUserTeamDto } from './mapper/user.mapper';
 
 @Injectable()
 export class UserService {
@@ -27,14 +28,7 @@ export class UserService {
     const employee = await this.employeeRepository.findOne(employeeId);
     const team = await this.teamRepository.findOne({ where: { code: teamCode } });
 
-    const user = this.userRepository.save(
-      { 
-        username: employee.email.split('@')[0], 
-        password,
-        employee,
-        team,
-      }
-    )
+    const user = this.userRepository.save(toUser(createUserDto, employee, team));
     
     return user;
   }
@@ -47,13 +41,7 @@ export class UserService {
         where: { username }
       });
    
-    return users.map(({ username, employee, team }) => (
-      {
-        username,
-        email: employee.email,
-        teamCode: team.code
-      } as GetUserTeamDto
-    ));
+    return users.map(user => toUserTeamDto(user));
   }
 
   findOne(id: number) {
