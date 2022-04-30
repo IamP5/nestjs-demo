@@ -39,8 +39,13 @@ export class UserService {
     return user;
   }
 
-  async findAll(): Promise<GetUserTeamDto[]> {
-    const users = await this.userRepository.find({ relations: ['team', 'employee'] });
+  async findAll(username: string): Promise<GetUserTeamDto[]> {
+    const users = !username
+      ? await this.userRepository.find({ relations: ['team', 'employee'] })
+      : await this.userRepository.find({
+        relations: ['team', 'employee'],
+        where: { username }
+      });
    
     return users.map(({ username, employee, team }) => (
       {
