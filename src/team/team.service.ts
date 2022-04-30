@@ -18,8 +18,13 @@ export class TeamService {
     return this.teamRepository.save(createTeamDto);
   }
 
-  async findAll(): Promise<GetTeamUsersDto[]> {
-    const teams = await this.teamRepository.find({ relations: ['users', 'users.employee'] });
+  async findAll(teamCode: string): Promise<GetTeamUsersDto[]> {
+    const teams = !teamCode
+      ? await this.teamRepository.find({ relations: ['users', 'users.employee'] })
+      : await this.teamRepository.find({ 
+        relations: ['users', 'users.employee'],
+        where: { code: teamCode }
+      })
 
     return teams.map(({ name, code, users }) => (
       {
