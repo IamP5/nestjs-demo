@@ -1,4 +1,3 @@
-import { Type } from "class-transformer";
 import { IsString, Length } from "class-validator";
 
 export class CreateTeamDto {

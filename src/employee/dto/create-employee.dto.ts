@@ -1,4 +1,3 @@
-import { Type } from "class-transformer";
 import { IsEmail, IsString, Length, min } from "class-validator";
 
 export class CreateEmployeeDto {
